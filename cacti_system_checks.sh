@@ -78,6 +78,10 @@ printf "%s\n"
 echo !!!!! PHP version !!!!!
  php -v
 printf "%s\n" 
+echo !!!!! RRD Tool Version !!!!!
+rrdtool  | grep RRDtool
+printf "%s\n"
+
 echo !!!!! disk usage !!!!!
 
  df -h
