@@ -33,9 +33,9 @@ fi
 if [[ $mode = "--h" || $mode = "--H"  ]]
 then
 echo "This script will reindex devices that the Cacti log"
-echo " Show need to be reindex there are a few options to do the reindex"
+echo "Show need to be reindex there are a few options to do the reindex"
 echo "-h Prints this menu"
-echo " --file allows you to input a file with all of the device ID's to be reindexed 1 per line"
+echo "--file allows you to input a file with all of the device ID's to be reindexed 1 per line"
 echo "--id followed by the device ID will re-index that device only"
 fi
 
