@@ -23,6 +23,7 @@
 
 #!/bin/bash
 
+rm rrd_checkresults.txt
 input=$1
 
 if [[ $1 = "" ]]
@@ -32,11 +33,22 @@ fi
 
 if [[ $input = --h ]] || [[ $input = --H ]]
 then
+echo " "
 echo "--a sets the script to automatic mode which will look at the past 10 minutes of data"
 echo "if you would like Automode to default to your rra folder and a specific timeframe update the"
 echo "rrd_path and past_min variables"
+echo " "
 echo "--i sets the script into interactive mode which allows you to set which path and timeframe"
+echo " "
 echo "-h prints this menu"
+echo " "
+echo " "
+
+echo "A note if you are using cacti boost you should either check against a longer length of time or after Boost has run"
+echo "as with Boost the RRD files are not constantly updated so it can be normaly to show NaN values in the RRD for a period of time"
+echo "If you see an abnormal amount of Dead RRD messeges from this script that may be the cause so either wait for the Boost poller to finish"
+echo "Or chooise a longer length of time"
+echo " "
 fi
 
 if [[ $input = --i ]] || [[ $input = --I ]]
@@ -47,6 +59,7 @@ echo "Enter RRA Path typically /var/www/html/cacti/rra"
 read -r rrd_path
 echo "How many minutes in the past would you like to fetch data for NAN values"
 read -r past_min
+
 
 fi
 
@@ -59,19 +72,20 @@ fi
 
 
 timestamp=$(date +%s -d $past_min'mins ago');
-echo $timestamp
 
 for rrd in $rrd_path;
 do
 
 scan=$(rrdtool fetch $rrd LAST -s $timestamp | grep nan | wc -l  )
 
-if [[ $scan >  $past_min ]]
+if (( $scan >  $past_min ))
 then 
 echo $rrd "Dead RRD" the Last $scan values were NaN
+## Log these bad results to a file
+
+echo  $rrd "Dead RRD" the Last $scan values were NaN >> rrd_checkresults.txt
 fi
-
-
 done
 
 
+echo "Script done results stored in rrd_checkresults.txt"
